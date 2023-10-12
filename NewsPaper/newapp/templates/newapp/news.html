@@ -1,0 +1,72 @@
+{% extends 'layout/base.html' %}
+{% load custom_filters %}
+
+{% block title %}
+News
+{% endblock title %}
+
+{% block content %}
+
+<h1>Все новости</h1>
+{% if news %}
+
+<h3>{{ time_now }}</h3>
+
+<form method="GET">
+   {{ filter.form }}
+
+   <input class="btn btn-primary" type="submit" value="Найти">
+</form>
+
+<table class="table">
+    <tr>
+        <th scope="col">
+            Автор
+        </th>
+        <th scope="col">
+            Заголовок
+        </th>
+         <th scope="col">
+            Дата
+        </th>
+        <th scope="col">
+            Новость
+        </th>
+
+
+    </tr>
+    {% for new in news %}
+    <tr>
+        <td>
+            <a href="{% url 'newapp:new_detail' new.id %}">
+            {{ new.author|safe }}
+            </a>
+        </td>
+        <td>
+            {{ new.title|safe|censor }}
+        </td>
+        <td>
+            {{ new.dateCreation|date:"d-M-Y H:i" }}
+        </td>
+        <td>
+            {{ new.text|truncatechars:50|censor }}
+        </td>
+    <td>
+       <a href="{% url 'newapp:new_update' new.id %}">
+           Редактировать
+       </a>
+       <a href="{% url 'newapp:new_delete' new.id %}">
+           Удалить
+       </a>
+   </td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{% url 'newapp:new_create' %}" class="btn btn-primary my-3">Добавить новость/статью</a>
+{% include 'newapp/parts/paginator.html' %}
+{% else %}
+
+<h2>No news yet.</h2>
+{% endif %}
+
+{% endblock content %}
